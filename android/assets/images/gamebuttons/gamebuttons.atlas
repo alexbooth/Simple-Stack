@@ -1,0 +1,152 @@
+
+gamebuttons.png
+format: RGBA8888
+filter: MipMapLinearLinear,Linear
+repeat: none
+playDown
+  rotate: false
+  xy: 2, 1546
+  size: 768, 320
+  orig: 768, 320
+  offset: 0, 0
+  index: -1
+playUp
+  rotate: false
+  xy: 2, 1221
+  size: 767, 321
+  orig: 767, 321
+  offset: 0, 0
+  index: -1
+rulesDown
+  rotate: false
+  xy: 774, 1546
+  size: 768, 320
+  orig: 768, 320
+  offset: 0, 0
+  index: -1
+rulesUp
+  rotate: false
+  xy: 773, 1222
+  size: 768, 320
+  orig: 768, 320
+  offset: 0, 0
+  index: -1
+cancelDown
+  rotate: false
+  xy: 2, 737
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
+cancelUp
+  rotate: false
+  xy: 2, 253
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
+okDown
+  rotate: false
+  xy: 1546, 1386
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
+okUp
+  rotate: false
+  xy: 486, 737
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
+mainMenuDown
+  rotate: false
+  xy: 2, 9
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+mainMenuUp
+  rotate: false
+  xy: 486, 493
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+nextLevelDown
+  rotate: false
+  xy: 486, 249
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+nextLevelUp
+  rotate: false
+  xy: 970, 978
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+replayDown
+  rotate: false
+  xy: 970, 734
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+replayUp
+  rotate: false
+  xy: 970, 490
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+restartDown
+  rotate: false
+  xy: 970, 246
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+restartUp
+  rotate: false
+  xy: 486, 5
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+resumeDown
+  rotate: false
+  xy: 970, 2
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+resumeUp
+  rotate: false
+  xy: 1545, 1142
+  size: 480, 240
+  orig: 480, 240
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 1454, 882
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+backDown
+  rotate: false
+  xy: 1454, 628
+  size: 250, 250
+  orig: 250, 250
+  offset: 0, 0
+  index: -1
+backUp
+  rotate: false
+  xy: 1714, 888
+  size: 250, 250
+  orig: 250, 250
+  offset: 0, 0
+  index: -1

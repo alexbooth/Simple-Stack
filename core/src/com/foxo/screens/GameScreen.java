@@ -25,6 +25,7 @@ import com.foxo.objects.GameTimer;
 import com.foxo.saving.SaveObject;
 import com.foxo.simplestack.Assets;
 import com.foxo.simplestack.FontSize;
+import com.foxo.simplestack.ShaderBackground;
 
 
 public class GameScreen implements Screen, InputProcessor {
@@ -38,6 +39,7 @@ public class GameScreen implements Screen, InputProcessor {
     private SpriteBatch batcher;
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
+    private ShaderBackground background;
 
     private TweenManager tween;
     private GameTimer timer;
@@ -93,7 +95,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         font = Assets.AlegreyaSans;
         shader = new ShaderProgram(Gdx.files.internal("shaders/outline.vert"), Gdx.files.internal("shaders/outline.frag"));
-
+        background = new ShaderBackground(batcher);
         createButtons();
         Gdx.input.setInputProcessor(this);
 
@@ -122,16 +124,9 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batcher.setProjectionMatrix(camera.combined);
-        batcher.disableBlending();
 
-        batcher.begin();
-        if(Assets.sixteenByNine)
-            batcher.draw(Assets.gameBackground, 0, 0, V_WIDTH, V_HEIGHT, 0, 0,  Assets.gameBackground.getWidth(), Assets.gameBackground.getHeight(), false, true);
-        else
-            batcher.draw(Assets.gameBackground, 0, 0, V_WIDTH, V_WIDTH / 3f * 2f, 0, 0,  Assets.gameBackground.getWidth(), Assets.gameBackground.getHeight(), false, true);
-        batcher.end();
+        background.draw();
 
-        batcher.enableBlending();
         batcher.begin();
 
         for(Array<Block> stack: board)
@@ -280,7 +275,7 @@ public class GameScreen implements Screen, InputProcessor {
         batcher.begin();
 
         font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);
-        font.draw(batcher, "Moves: " + board.getMoves(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        font.draw(batcher, "Moves: " + Gdx.graphics.getFramesPerSecond(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
 
         batcher.end();
         batcher.setShader(null);
@@ -455,9 +450,11 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose () {
         shapeRenderer.dispose();
+        background.dispose();
         batcher.dispose();
         shader.dispose();
         font.dispose();
+
         Gdx.input.setInputProcessor(null);
 
         if(Assets.debug)

@@ -123,7 +123,7 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
     public void render (float delta) {
         batcher.setProjectionMatrix(camera.combined);
         batcher.begin();
-        //a test comment to test committing from laptop
+
         batcher.draw(Assets.menuBackground, 0, 0, V_WIDTH, V_HEIGHT, 0, 0,  Assets.menuBackground.getWidth(), Assets.menuBackground.getHeight(), false, false);
 
         if(page > lockAboveIndex + 1)

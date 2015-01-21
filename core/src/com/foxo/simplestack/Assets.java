@@ -23,7 +23,7 @@ public class Assets {
     public static TextureRegion pause, resumeUp, resumeDown, mainMenuUp, mainMenuDown, nextLevelUp, nextLevelDown, restartUp, restartDown, replayUp;
     public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown;
     public static TextureRegion blockTexture[], levelDown[], levelUp[], levelLock[];
-    public static Texture splash, menuBackground, gameBackground, htpBackground, title;
+    public static Texture splash, menuBackground, board, htpBackground, title;
 
     public static BitmapFont AlegreyaSans;
     public static Block blocks[];
@@ -61,8 +61,8 @@ public class Assets {
         menuBackground = new Texture(Gdx.files.internal("images/menu/menubackground.png"));
         menuBackground.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-        gameBackground = new Texture(Gdx.files.internal("images/menu/gamebackground.png"));
-        gameBackground.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        board = new Texture(Gdx.files.internal("images/menu/board.png"), true);
+        board.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
     }
 
     public static void loadFont() {
@@ -139,10 +139,7 @@ public class Assets {
         if(Assets.debug)
             System.out.println("Loading splash assets");
 
-        if((float) WIDTH / HEIGHT > 1.555555f)
-            sixteenByNine = true;
-        else
-            sixteenByNine = false;
+        sixteenByNine = (float) WIDTH / HEIGHT > 1.555555f;
 
         System.out.println(sixteenByNine);
 
@@ -152,7 +149,7 @@ public class Assets {
 
     public static void dispose() {
         menuBackground.dispose();
-        gameBackground.dispose();
+        board.dispose();
         AlegreyaSans.dispose();
         splash.dispose();
         title.dispose();

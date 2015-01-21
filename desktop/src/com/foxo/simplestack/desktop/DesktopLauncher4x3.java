@@ -10,6 +10,7 @@ public class DesktopLauncher4x3 {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1024;
         config.height = 768;
+        config.vSyncEnabled = true;
 		new LwjglApplication(new SSGame(), config);
 	}
 }

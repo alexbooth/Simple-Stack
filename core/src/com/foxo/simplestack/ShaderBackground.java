@@ -10,18 +10,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.util.Random;
 
 
 public class ShaderBackground {
     private ShaderProgram shader;
-    private SpriteBatch batch;
     private TextureRegion fboRegion;
     private FrameBuffer fbo;
     private Mesh mesh;
     private Random r;
-
+    private ShapeRenderer sr;
     private int timeOffset;
     private long timeOrigin;
     private float time;
@@ -29,16 +29,14 @@ public class ShaderBackground {
     private float width;
     private float height;
 
-    public ShaderBackground(SpriteBatch batch) {
-        this.batch = batch;
-
+    public ShaderBackground() {
         width = Assets.WIDTH;
         height = Assets.HEIGHT;
 
         r = new Random();
         timeOffset = r.nextInt(100000);
         timeOrigin = System.currentTimeMillis();
-
+        sr = new ShapeRenderer();
         fbo = new FrameBuffer(Pixmap.Format.RGB888, 640, 360, false);
         fboRegion = new TextureRegion(fbo.getColorBufferTexture());
         fboRegion.flip(false, true);
@@ -51,7 +49,7 @@ public class ShaderBackground {
             System.out.println(shader.getLog());
     }
 
-    public void draw() {
+    public void draw(SpriteBatch batch) {
         time = (float) ((System.currentTimeMillis() - timeOrigin) / 1000.0d + timeOffset);
         int a = shader.getUniformLocation("time");
 
@@ -62,13 +60,21 @@ public class ShaderBackground {
         shader.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
         mesh.render(shader, GL20.GL_TRIANGLES);
         shader.end();
+
+        //to use as a random polygon 'tree'
+        float[] poly = new float[] { 0.0f, 0.0f,
+                                     1.0f, 0.5f,
+                                     2.0f, 1.0f,
+                                     0.5f, 1.5f};
+
         fbo.end();
 
         batch.begin();
         batch.disableBlending();
-        batch.draw(fboRegion, 0, 0, width, height);
+        batch.draw(fboRegion, 0, 0, Assets.V_WIDTH, Assets.V_HEIGHT);
         batch.enableBlending();
-        batch.draw(Assets.board, 0, height - height * (Assets.board.getHeight() / 1080f), width, height * (Assets.board.getHeight() / 1080f), 0, 0, 1920, 1080, false, true);
+        batch.draw(Assets.board, 0, Assets.V_HEIGHT - (Assets.V_HEIGHT) * (Assets.board.getHeight() / 1080f),
+                Assets.V_WIDTH, (Assets.V_HEIGHT) * (Assets.board.getHeight() / 1080f), 0, 0,  Assets.board.getWidth(), Assets.board.getHeight(), false, true);
         batch.end();
     }
 

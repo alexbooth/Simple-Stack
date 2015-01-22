@@ -29,7 +29,7 @@ public class TransitionScreen implements Screen {
     public static final int SLIDE_BOTH_RIGHT = 2;
     public static final int FADE_OUT_IN = 3;
 
-    private SpriteBatch batcher;
+    private SpriteBatch batch;
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
     private Screen current;
@@ -47,7 +47,7 @@ public class TransitionScreen implements Screen {
         this.current = current;
         this.tweenType = tweenType;
 
-        batcher = new SpriteBatch();
+        batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Assets.WIDTH, Assets.HEIGHT);
@@ -158,13 +158,13 @@ public class TransitionScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batcher.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
 
         if(tweenType ==  FADE_OUT_IN) {
-            batcher.begin();
-            nextScreenSprite.draw(batcher);
-            currentScreenSprite.draw(batcher);
-            batcher.end();
+            batch.begin();
+            nextScreenSprite.draw(batch);
+            currentScreenSprite.draw(batch);
+            batch.end();
 
             Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
             shapeRenderer.setProjectionMatrix(camera.combined);
@@ -182,10 +182,10 @@ public class TransitionScreen implements Screen {
             Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);
         }
         else {
-            batcher.begin();
-            currentScreenSprite.draw(batcher);
-            nextScreenSprite.draw(batcher);
-            batcher.end();
+            batch.begin();
+            currentScreenSprite.draw(batch);
+            nextScreenSprite.draw(batch);
+            batch.end();
         }
 
         if(delta <= 0.022f)

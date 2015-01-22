@@ -45,6 +45,7 @@ public class Assets {
         loadFont();
 
         loadComplete = true;
+
         if(Assets.debug)
             System.out.println("Assets loaded after " + (System.currentTimeMillis() - time) / 1000 + " seconds");
 

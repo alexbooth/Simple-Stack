@@ -95,7 +95,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         font = Assets.AlegreyaSans;
         shader = new ShaderProgram(Gdx.files.internal("shaders/outline.vert"), Gdx.files.internal("shaders/outline.frag"));
-        background = new ShaderBackground(batcher);
+        background = new ShaderBackground();
         createButtons();
         Gdx.input.setInputProcessor(this);
 
@@ -120,12 +120,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl20.glClearColor(75 / 255f, 95 / 255f, 91 / 255f, 1);
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         batcher.setProjectionMatrix(camera.combined);
 
-        background.draw();
+        background.draw(batcher);
 
         batcher.begin();
 

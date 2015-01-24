@@ -1,6 +1,7 @@
 package com.foxo.simplestack;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -16,10 +17,10 @@ import java.util.Random;
 
 
 public class ShaderBackground {
-    private ShaderProgram shader;
+    private ShaderProgram shader, shader2;
     private TextureRegion fboRegion;
     private FrameBuffer fbo;
-    private Mesh mesh;
+    private Mesh mesh, mesh2;
     private Random r;
     private ShapeRenderer sr;
     private int timeOffset;
@@ -37,13 +38,15 @@ public class ShaderBackground {
         timeOffset = r.nextInt(100000);
         timeOrigin = System.currentTimeMillis();
         sr = new ShapeRenderer();
-        fbo = new FrameBuffer(Pixmap.Format.RGB888, 640, 360, false);
+        fbo = new FrameBuffer(Pixmap.Format.RGB888,(int) (width/2), (int) (height/2), false);
         fboRegion = new TextureRegion(fbo.getColorBufferTexture());
         fboRegion.flip(false, true);
 
         ShaderProgram.pedantic = false;
         shader = new ShaderProgram(Gdx.files.internal("shaders/background.vert").readString(), Gdx.files.internal("shaders/background.frag").readString());
+        shader2 = new ShaderProgram(Gdx.files.internal("shaders/default.vert").readString(), Gdx.files.internal("shaders/default.frag").readString());
         mesh = genFullViewRectangle();
+        mesh2 = createMesh();
 
         if (shader.getLog().length()!=0)
             System.out.println(shader.getLog());
@@ -61,18 +64,17 @@ public class ShaderBackground {
         mesh.render(shader, GL20.GL_TRIANGLES);
         shader.end();
 
-        //to use as a random polygon 'tree'
-        float[] poly = new float[] { 0.0f, 0.0f,
-                                     1.0f, 0.5f,
-                                     2.0f, 1.0f,
-                                     0.5f, 1.5f};
+
+        shader2.begin();
+        shader2.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
+        mesh2.render(shader2, GL20.GL_TRIANGLES, 0, 3);
+        shader2.end();
 
         fbo.end();
 
         batch.begin();
-        batch.disableBlending();
-        batch.draw(fboRegion, 0, 0, Assets.V_WIDTH, Assets.V_HEIGHT);
         batch.enableBlending();
+        batch.draw(fboRegion, 0, 0, Assets.V_WIDTH, Assets.V_HEIGHT);
         batch.draw(Assets.board, 0, Assets.V_HEIGHT - (Assets.V_HEIGHT) * (Assets.board.getHeight() / 1080f),
                 Assets.V_WIDTH, (Assets.V_HEIGHT) * (Assets.board.getHeight() / 1080f), 0, 0,  Assets.board.getWidth(), Assets.board.getHeight(), false, true);
         batch.end();
@@ -91,6 +93,23 @@ public class ShaderBackground {
 
         return mesh;
     }
+
+    public Mesh createMesh() {
+        if (mesh == null) {
+            mesh = new Mesh(true, 3, 3,
+                    new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
+                    new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"),
+                    new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+
+            mesh.setVertices(new float[] { -Assets.V_WIDTH, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0,    0.5f,
+                    Assets.V_WIDTH, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 0.5f, 0.5f,
+                                            0,     0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 0.5f, 0 });
+
+            mesh.setIndices(new short[] { 0, 1, 2 });
+        }
+        return mesh;
+    }
+
 
     public void dispose() {
         fboRegion = null;

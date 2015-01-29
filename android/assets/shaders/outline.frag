@@ -12,7 +12,7 @@ const  vec3 OutlineColor = vec3(0.0, 0.0, 0.0);
 const  float SmoothCenter = 0.3;
 const  float OutlineCenter = 0.6;
 
-void main(void)
+void main()
 {
      vec4 color = texture2D(u_texture, v_texCoord);
      float distance = color.a;

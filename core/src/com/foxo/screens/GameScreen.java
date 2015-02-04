@@ -25,7 +25,7 @@ import com.foxo.objects.GameTimer;
 import com.foxo.saving.SaveObject;
 import com.foxo.simplestack.Assets;
 import com.foxo.simplestack.FontSize;
-import com.foxo.simplestack.ShaderBackground;
+import com.foxo.background.ShaderBackground;
 
 
 public class GameScreen implements Screen, InputProcessor {
@@ -95,7 +95,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         font = Assets.AlegreyaSans;
         shader = new ShaderProgram(Gdx.files.internal("shaders/outline.vert"), Gdx.files.internal("shaders/outline.frag"));
-        background = new ShaderBackground();
+        background = new ShaderBackground(shapeRenderer, camera);
         createButtons();
         Gdx.input.setInputProcessor(this);
 
@@ -120,6 +120,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        //System.out.println(batcher.maxSpritesInBatch);
+        long time = System.nanoTime();
         batcher.setProjectionMatrix(camera.combined);
 
         background.draw(batcher);
@@ -163,6 +165,7 @@ public class GameScreen implements Screen, InputProcessor {
             renderWon();
 
         tween.update(delta);
+       // System.out.println("delta is " + ((System.nanoTime() - time)) + " seconds");
     }
 
     public void renderReady() {
@@ -272,7 +275,7 @@ public class GameScreen implements Screen, InputProcessor {
         batcher.begin();
 
         font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);
-        font.draw(batcher, "Moves: " + Gdx.graphics.getFramesPerSecond(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        font.draw(batcher, "FPS: " + Gdx.graphics.getFramesPerSecond(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
 
         batcher.end();
         batcher.setShader(null);

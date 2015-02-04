@@ -2,6 +2,10 @@
     precision mediump float;
 #endif
 
+varying vec2 vTexCoord;
+uniform vec3 color;
+
 void main() {
-    gl_FragColor = vec4(256.0 / 255.0, 142.0 / 255.0, 135.0 / 255.0, 1.0);
+    float aa = 1.0 - vTexCoord.y;
+    gl_FragColor = vec4(color, smoothstep(0.0,0.6, aa));
 }

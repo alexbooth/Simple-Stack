@@ -34,57 +34,63 @@
 	},
 	"level:3": {
 		"class": "com.foxo.saving.SaveObject",
-		"moves": 12,
 		"level": 3,
-		"time": 555.4024,
+		"time": 82.71403,
 		"inProgress": true,
-		"bestTime": 6.91684,
+		"bestTime": 3.1332507,
 		"bestMoves": 7,
 		"array": [
 			{
-				"items": [ 12, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 2
-			},
-			{},
-			{
-				"items": [ 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 1
-			}
-		]
-	},
-	"level:4": {
-		"class": "com.foxo.saving.SaveObject",
-		"level": 4,
-		"time": 1.4833854,
-		"inProgress": true,
-		"bestTime": 21.83623,
-		"bestMoves": 18,
-		"array": [
-			{
-				"items": [ 12, 11, 10, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 4
+				"items": [ 12, 11, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 3
 			},
 			{},
 			{}
 		]
 	},
+	"level:4": {
+		"class": "com.foxo.saving.SaveObject",
+		"moves": 10,
+		"level": 4,
+		"time": 66.23271,
+		"inProgress": true,
+		"bestTime": 21.83623,
+		"bestMoves": 18,
+		"array": [
+			{
+				"items": [ 12, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 2
+			},
+			{
+				"items": [ 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 1
+			},
+			{
+				"items": [ 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 1
+			}
+		]
+	},
 	"level:5": {
 		"class": "com.foxo.saving.SaveObject",
-		"moves": 26,
+		"moves": 30,
 		"level": 5,
-		"time": 25267.215,
+		"time": 25278.82,
 		"inProgress": true,
 		"bestTime": 3.4028235E38,
 		"bestMoves": 2147483647,
 		"array": [
 			{
-				"items": [ 12, 11, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 3
-			},
-			{},
-			{
-				"items": [ 10, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"items": [ 12, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 				"size": 2
+			},
+			{
+				"items": [ 11, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 2
+			},
+			{
+				"items": [ 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 1
 			}
 		]
 	}

@@ -8,8 +8,9 @@ import com.foxo.simplestack.SSGame;
 public class DesktopLauncher16x9 {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1280;
-        config.height = 720;
+        config.width = 1920;
+        config.height = 1080;
+        config.fullscreen = true;
         config.vSyncEnabled = true;
 		new LwjglApplication(new SSGame(), config);
 	}

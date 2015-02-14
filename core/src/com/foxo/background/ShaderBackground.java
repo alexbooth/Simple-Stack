@@ -63,7 +63,7 @@ public class ShaderBackground {
 
         forest[0].update(hill_1_amplitude, hill_1_phase, 0.309f);
         forest[1].update(hill_2_amplitude, hill_2_phase, 0.249f);
-        forest[2].update(hill_3_amplitude, hill_3_phase, 0.19f);
+        forest[2].update(hill_3_amplitude, hill_3_phase, 0.199f);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.rect(0, 0, Assets.V_WIDTH, Assets.V_HEIGHT/2,

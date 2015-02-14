@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.foxo.simplestack.Assets;
 
+import java.util.Random;
+
 
 public class Tree {
 
@@ -16,35 +18,66 @@ public class Tree {
     private Mesh mesh;
     private float x;
     private int index;
+    private Random r;
 
     public Tree(float x, int index) {
         this.x = x;
         this.index = index;
 
+        float trunkWidth = 0.03f;
+
         pointyTreeBase = new float[]{  0.00f,  0.00f,  0, 0, 1f,
-                                       0.05f,  0.00f,  0, 0, 0f,
+                                  trunkWidth,  0.00f,  0, 0, 0f,
                                        0.00f,  0.10f,  0, 0, 1f,
-                                       0.05f,  0.10f,  0, 0, 0f,
-                                       0.10f,  0.10f,  0, 0, 1f,
-                                       0.05f,  0.225f, 0, 0, 0f,
+                                  trunkWidth,  0.10f,  0, 0, 0f,
+                          trunkWidth + 0.05f,  0.10f,  0, 0, 1f,
+                                  trunkWidth,  0.225f, 0, 0, 0f,
                                       -0.05f,  0.10f,  0, 0, 1f,
                                        0.00f,  0.225f, 0, 0, 0f,
                                       -0.05f,  0.225f, 0, 0, 1f,
-                                       0.10f,  0.225f, 0, 0, 0f,
-                                       0.025f, 0.35f,  0, 0, 1f};
+                          trunkWidth + 0.05f,  0.225f, 0, 0, 0f,
+                               trunkWidth/2f, 0.35f,  0, 0, 1f};
 
-        newTree = pointyTreeBase.clone();
+        newTree = deform(pointyTreeBase);
 
-        createMesh(x);
+        createMesh();
     }
 
-    public void createMesh(float x) {
+    public float[] deform(float[] mesh) {
+        r = new Random();
+
+        float maxOffset = 0.02f;
+
+        for (int i = 0; i < mesh.length; i += 5)
+            mesh[i] += ((r.nextInt(500)-1000)/1000f) * maxOffset;
+
+        for (int i = 11; i < mesh.length; i += 5)
+            mesh[i] += ((r.nextInt(500)-1000)/1000f) * maxOffset;
+
+        float xScale = r.nextFloat()/2f + 0.5f;
+        float yScale = r.nextFloat()/2f + 0.5f;
+
+        if(index == 0){
+            xScale *= 0.60f;
+            yScale *= 0.60f;
+        }
+        else if (index == 1) {
+            xScale *= 0.80f;
+            yScale *= 0.80f;
+        }
+
+        for (int i = 0; i < mesh.length; i += 5) {
+            mesh[i] *= xScale;
+            mesh[i+1] *= yScale;
+        }
+
+        return mesh.clone();
+    }
+
+    public void createMesh() {
         mesh = new Mesh(true, 11, 27,
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
                 new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-
-        for (int i = 0; i < pointyTreeBase.length; i += 5)
-            newTree[i] += x;
 
         mesh.setVertices(newTree);
 
@@ -78,5 +111,23 @@ public class Tree {
             default:shader.setUniformf("color", 1, 0, 0); break;
         }
         mesh.render(shader, GL20.GL_TRIANGLES);
+    }
+
+    public float getWidth() {
+        float leftMostpoint = 4f;
+        float rightMostPoint = -1f;
+
+        for(int i = 0; i < newTree.length; i+=5) {
+            if(newTree[i] < leftMostpoint)
+                leftMostpoint = newTree[i];
+            if(newTree[i] > rightMostPoint)
+                rightMostPoint = newTree[i];
+        }
+
+        return rightMostPoint-leftMostpoint;
+    }
+
+    public float getX() {
+        return x;
     }
 }

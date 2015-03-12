@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.foxo.simplestack.Assets;
@@ -19,84 +18,51 @@ import com.foxo.tween.FloatAccessor;
 import com.foxo.tween.TransitionTween;
 import com.foxo.tween.TweenableFloat;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 
 
 public class TransitionScreen implements Screen {
 
-    public static final int SLIDE_BOTH_LEFT = 1;
-    public static final int SLIDE_BOTH_RIGHT = 2;
-    public static final int FADE_OUT_IN = 3;
+    public static final int SLIDE_BOTH_LEFT = 0;
+    public static final int SLIDE_BOTH_RIGHT = 1;
+    public static final int FADE_OUT_IN = 2;
 
     private SpriteBatch batch;
-    private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
-    private Screen current;
-    private FrameBuffer currentBuffer;
-    private FrameBuffer nextBuffer;
+
     private Sprite currentScreenSprite;
     private Sprite nextScreenSprite;
 
     private TweenManager manager;
-    private TweenCallback backgroundAnimationTweenComplete;
+    private TweenCallback transitionTweenComplete;
     private TweenableFloat alpha;
     private int tweenType;
 
-    public TransitionScreen(final Screen current, final Screen next, final Game game, final int tweenType) {
-        this.current = current;
+    public TransitionScreen(CustomScreen current, final CustomScreen next, final Game game, int tweenType) {
         this.tweenType = tweenType;
 
         batch = new SpriteBatch();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Assets.WIDTH, Assets.HEIGHT);
-
+        alpha = new TweenableFloat();
         manager = new TweenManager();
         shapeRenderer = new ShapeRenderer();
-        alpha = new TweenableFloat();
 
-        backgroundAnimationTweenComplete = new TweenCallback() {
+        currentScreenSprite = new Sprite(current.getBuffer());
+        nextScreenSprite = new Sprite(next.getBuffer());
+
+        currentScreenSprite.flip(false, true);
+        nextScreenSprite.flip(false, true);
+
+        transitionTweenComplete = new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                alpha = new TweenableFloat();
                 game.setScreen(next);
             }
         };
 
-        nextBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Assets.WIDTH, Assets.HEIGHT, false);
-
-        nextBuffer.begin();
-        next.render(Gdx.graphics.getDeltaTime());
-        nextBuffer.end();
-
-        nextScreenSprite = new Sprite(nextBuffer.getColorBufferTexture());
-        nextScreenSprite.flip(false, true);
-
-        currentBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Assets.WIDTH, Assets.HEIGHT, false);
-        currentBuffer.begin();
-        current.render(Gdx.graphics.getDeltaTime());
-        currentBuffer.end();
-
-        currentScreenSprite = new Sprite(currentBuffer.getColorBufferTexture());
-        currentScreenSprite.flip(false, true);
-
         switch(tweenType) {
-            case SLIDE_BOTH_LEFT:
-                tweenToHTP();
-                break;
-            case SLIDE_BOTH_RIGHT:
-                tweenToMenu();
-                break;
-            case FADE_OUT_IN:
-                fadeOutIn();
-                break;
-            default:
-                break;
+            case SLIDE_BOTH_LEFT:   slideBothLeft();    break;
+            case SLIDE_BOTH_RIGHT:  slideBothRight();   break;
+            case FADE_OUT_IN:       fadeOutIn();        break;
         }
-
-        if(Assets.debug)
-            System.out.println("TransitionScreen attached");
     }
 
     private void fadeOutIn() {
@@ -110,12 +76,12 @@ public class TransitionScreen implements Screen {
                 .repeatYoyo(1, 0)
                 .target(1)
                 .ease(Linear.INOUT)
-                .setCallback(backgroundAnimationTweenComplete)
+                .setCallback(transitionTweenComplete)
                 .setCallbackTriggers(TweenCallback.COMPLETE)
                 .start(manager);
     }
 
-    private void tweenToMenu() {
+    private void slideBothRight() {
         Tween.registerAccessor(Sprite.class, new TransitionTween());
 
         currentScreenSprite.setPosition(0, 0);
@@ -123,18 +89,18 @@ public class TransitionScreen implements Screen {
 
         Tween.to(nextScreenSprite, TransitionTween.X,  0.5f)
                 .target(0)
-                .setCallback(backgroundAnimationTweenComplete)
+                .setCallback(transitionTweenComplete)
                 .setCallbackTriggers(TweenCallback.COMPLETE)
                 .start(manager);
 
         Tween.to(currentScreenSprite, TransitionTween.X,  0.5f)
                 .target(Assets.WIDTH)
-                .setCallback(backgroundAnimationTweenComplete)
+                .setCallback(transitionTweenComplete)
                 .setCallbackTriggers(TweenCallback.COMPLETE)
                 .start(manager);
     }
 
-    private void tweenToHTP() {
+    private void slideBothLeft() {
         Tween.registerAccessor(Sprite.class, new TransitionTween());
 
         currentScreenSprite.setPosition(0, 0);
@@ -142,32 +108,34 @@ public class TransitionScreen implements Screen {
 
         Tween.to(nextScreenSprite, TransitionTween.X, 0.5f)
                 .target(0)
-                .setCallback(backgroundAnimationTweenComplete)
+                .setCallback(transitionTweenComplete)
                 .setCallbackTriggers(TweenCallback.COMPLETE)
                 .start(manager);
 
         Tween.to(currentScreenSprite, TransitionTween.X, 0.5f)
                 .target(-Assets.WIDTH)
-                .setCallback(backgroundAnimationTweenComplete)
+                .setCallback(transitionTweenComplete)
                 .setCallbackTriggers(TweenCallback.COMPLETE)
                 .start(manager);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        nextScreenSprite.draw(batch);
+        currentScreenSprite.draw(batch);
+        batch.end();
 
-        batch.setProjectionMatrix(camera.combined);
+        if(tweenType == FADE_OUT_IN)
+            renderFadeOutIn();
 
+        if(delta <= 0.022f)     //this keeps tweens from looking too choppy during cpu interrupts
+            manager.update(Gdx.graphics.getDeltaTime());
+    }
+
+    public void renderFadeOutIn() {
         if(tweenType ==  FADE_OUT_IN) {
-            batch.begin();
-            nextScreenSprite.draw(batch);
-            currentScreenSprite.draw(batch);
-            batch.end();
-
             Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-            shapeRenderer.setProjectionMatrix(camera.combined);
             shapeRenderer.begin(ShapeType.Filled);
 
             if(alpha.getFloat() >= 0.975f) {
@@ -181,26 +149,11 @@ public class TransitionScreen implements Screen {
             shapeRenderer.end();
             Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);
         }
-        else {
-            batch.begin();
-            currentScreenSprite.draw(batch);
-            nextScreenSprite.draw(batch);
-            batch.end();
-        }
-
-        if(delta <= 0.022f)
-            manager.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
-        currentBuffer.dispose();
-        nextBuffer.dispose();
-        current.dispose();
-
-        if(Assets.debug)
-            System.out.println("TransitionScreen disposed");
     }
 
     @Override

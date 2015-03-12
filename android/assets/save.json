@@ -35,7 +35,7 @@
 	"level:3": {
 		"class": "com.foxo.saving.SaveObject",
 		"level": 3,
-		"time": 0.666033,
+		"time": 0.4840606,
 		"inProgress": true,
 		"bestTime": 3.1332507,
 		"bestMoves": 7,
@@ -52,7 +52,7 @@
 		"class": "com.foxo.saving.SaveObject",
 		"moves": 10,
 		"level": 4,
-		"time": 66.23271,
+		"time": 79.28316,
 		"inProgress": true,
 		"bestTime": 21.83623,
 		"bestMoves": 18,

@@ -27,7 +27,7 @@ public class Forest {
             for (int i = 0; i < r.nextInt(4) + 1; i++) {
                 float off = r.nextFloat();
 
-                if(i >0){System.out.println(tree[j][i-1].getWidth());
+                if(i > 0){System.out.println(tree[j][i-1].getWidth());
                     tree[j][i] = new Tree(tree[j][i-1].getX()+tree[j][i-1].getWidth(), index);}
                 else
                     tree[j][i] = new Tree(off * Assets.V_WIDTH, index);

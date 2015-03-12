@@ -15,7 +15,7 @@ import com.foxo.simplestack.Assets;
 import com.foxo.simplestack.FontSize;
 
 
-public class HowToPlayScreen implements Screen, InputProcessor {
+public class HowToPlayScreen extends CustomScreen implements InputProcessor {
 
     private Game game;
 

@@ -28,7 +28,7 @@ import com.foxo.simplestack.FontSize;
 import com.foxo.background.ShaderBackground;
 
 
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen extends CustomScreen implements InputProcessor {
 
     private Game game;
 

@@ -26,7 +26,7 @@ import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quad;
 
 
-public class LevelSelectionScreen implements Screen, InputProcessor {
+public class LevelSelectionScreen extends CustomScreen implements InputProcessor {
 
     private Game game;
 

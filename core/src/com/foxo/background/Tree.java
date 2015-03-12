@@ -24,19 +24,22 @@ public class Tree {
         this.x = x;
         this.index = index;
 
-        float trunkWidth = 0.03f;
+        float trunkWidth = 0.05f;
+        float topWidth = 0.08f;
+        float botWidth = 0.08f;
+        float sectionHeight = 0.1f;
 
-        pointyTreeBase = new float[]{  0.00f,  0.00f,  0, 0, 1f,
-                                  trunkWidth,  0.00f,  0, 0, 0f,
-                                       0.00f,  0.10f,  0, 0, 1f,
-                                  trunkWidth,  0.10f,  0, 0, 0f,
-                          trunkWidth + 0.05f,  0.10f,  0, 0, 1f,
-                                  trunkWidth,  0.225f, 0, 0, 0f,
-                                      -0.05f,  0.10f,  0, 0, 1f,
-                                       0.00f,  0.225f, 0, 0, 0f,
-                                      -0.05f,  0.225f, 0, 0, 1f,
-                          trunkWidth + 0.05f,  0.225f, 0, 0, 0f,
-                               trunkWidth/2f, 0.35f,  0, 0, 1f};
+        pointyTreeBase = new float[]{      0.00f,              0.00f,  0, 0, 1f,
+                                      trunkWidth,              0.00f,  0, 0, 0f,
+                                           0.00f,      sectionHeight,  0, 0, 1f,
+                                      trunkWidth,      sectionHeight,  0, 0, 0f,
+                           trunkWidth + botWidth,      sectionHeight,  0, 0, 1f,
+                                      trunkWidth,  sectionHeight * 2,  0, 0, 0f,
+                                       -botWidth,      sectionHeight,  0, 0, 1f,
+                                           0.00f,  sectionHeight * 2,  0, 0, 0f,
+                                       -topWidth,  sectionHeight * 2,  0, 0, 1f,
+                           trunkWidth + topWidth,  sectionHeight * 2,  0, 0, 0f,
+                                    trunkWidth/2,  sectionHeight * 3,  0, 0, 1f};
 
         newTree = deform(pointyTreeBase);
 
@@ -46,29 +49,42 @@ public class Tree {
     public float[] deform(float[] mesh) {
         r = new Random();
 
-        float maxOffset = 0.02f;
+        float variance = 0.015f;
 
-        for (int i = 0; i < mesh.length; i += 5)
-            mesh[i] += ((r.nextInt(500)-1000)/1000f) * maxOffset;
+        mesh[0] += variance * r.nextFloat();
+        mesh[1 * 5] -= variance * r.nextFloat();
 
-        for (int i = 11; i < mesh.length; i += 5)
-            mesh[i] += ((r.nextInt(500)-1000)/1000f) * maxOffset;
+        mesh[2 * 5 ] += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[3 * 5]  += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[2 * 5 + 1] += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[3 * 5 + 1] += variance/2f * (r.nextFloat() * 2 - 1);
 
-        float xScale = r.nextFloat()/2f + 0.5f;
-        float yScale = r.nextFloat()/2f + 0.5f;
+        mesh[4 * 5 + 1] = mesh[2 * 5 + 1];
+        mesh[6 * 5 + 1] = mesh[2 * 5 + 1];
 
-        if(index == 0){
-            xScale *= 0.60f;
-            yScale *= 0.60f;
+        mesh[7 * 5] += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[5 * 5] += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[7 * 5 + 1] += variance/2f * (r.nextFloat() * 2 - 1);
+        mesh[5 * 5 + 1] += variance/2f * (r.nextFloat() * 2 - 1);
+
+        mesh[8 * 5 + 1] = mesh[7 * 5 + 1];
+        mesh[9 * 5 + 1] =  mesh[5 * 5 + 1];
+
+        mesh[10 * 5 + 1] += variance * (r.nextFloat() * 2 - 1);
+
+        float scaleFactor;
+
+       // if(r.nextFloat() < 0.4)
+      //      scaleFactor = 1 + r.nextFloat() / 3f;
+       //else
+            scaleFactor = 1 + 0.2f * (r.nextFloat() * 2 - 1);
+
+        for (int i=0; i < mesh.length; i+=5) {
+            mesh[i] = mesh[i] * scaleFactor;
         }
-        else if (index == 1) {
-            xScale *= 0.80f;
-            yScale *= 0.80f;
-        }
 
-        for (int i = 0; i < mesh.length; i += 5) {
-            mesh[i] *= xScale;
-            mesh[i+1] *= yScale;
+        for (int i=1; i<mesh.length; i+=5) {
+            mesh[i] = mesh[i] * scaleFactor;
         }
 
         return mesh.clone();
@@ -114,17 +130,25 @@ public class Tree {
     }
 
     public float getWidth() {
-        float leftMostpoint = 4f;
-        float rightMostPoint = -1f;
+        return rightMostPoint()-leftMostPoint();
+    }
 
-        for(int i = 0; i < newTree.length; i+=5) {
-            if(newTree[i] < leftMostpoint)
-                leftMostpoint = newTree[i];
+    public float leftMostPoint() {
+        float leftMostPoint =  4f;
+        for(int i = 0; i < newTree.length; i+=5)
+            if(newTree[i] < leftMostPoint)
+                leftMostPoint = newTree[i];
+
+        return leftMostPoint;
+    }
+
+    public float rightMostPoint() {
+        float rightMostPoint =  -1f;
+        for(int i = 0; i < newTree.length; i+=5)
             if(newTree[i] > rightMostPoint)
                 rightMostPoint = newTree[i];
-        }
 
-        return rightMostPoint-leftMostpoint;
+        return rightMostPoint;
     }
 
     public float getX() {

@@ -13,14 +13,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.foxo.buttons.Button;
 import com.foxo.simplestack.Assets;
 import com.foxo.tween.BaseImageAccessor;
 
 
-public class MenuScreen implements Screen, InputProcessor {
+public class MenuScreen extends CustomScreen implements  InputProcessor {
 
     private Game game;
 

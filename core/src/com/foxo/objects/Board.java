@@ -93,7 +93,7 @@ public class Board implements  Iterable<Array<Block>>{
                         for(int j = 0; j < save.getArray()[i].size; j++) {
                             int n = save.getArray()[i].get(j);
                             if(n > 0) {
-                                Assets.blocks[Assets.MAX_LEVEL - n].setLocation(i);
+                                Assets.blocks[Assets.MAX_LEVEL - n].setLocation(i + 1);
                                 blocks.get(i).add(Assets.blocks[Assets.MAX_LEVEL - n]);
                                 Tween.to(Assets.blocks[Assets.MAX_LEVEL - n], BaseImageAccessor.POSITION_XY, 0.75f)
                                         .target(i, vHeight - base - j * (vWidth / 26.67f))
@@ -119,7 +119,7 @@ public class Board implements  Iterable<Array<Block>>{
                     blocks.get(0).add(Assets.blocks[level - 1]);
                     Assets.blocks[level - 1].setPos(-1.5f, vHeight - base - (level - 1) * (vWidth / 26.67f));
 
-                    Tween.to(blocks.get(0).get(level - 1), BaseImageAccessor.POSITION_XY, 1.25f)
+                    Tween.to(blocks.get(0).get(level - 1), BaseImageAccessor.POSITION_XY, 1.25f) // TODO crashed here a few times randomly w/ java.lang.ArrayIndexOutOfBoundsException: 0
                             .waypoint(-0.5f, vHeight - base - (level+2) * (vWidth / 26.67f))
                             .target(0, vHeight - base - (level - 1) * (vWidth / 26.67f))
                             .ease(Back.INOUT)
@@ -166,6 +166,9 @@ public class Board implements  Iterable<Array<Block>>{
                     .ease(Quint.OUT)
                     .start(gameScreen.getTweenManager());
         }
+        for(int j = 0; j < 3; j++)
+            for(int i = 0; i < blocks.get(j).size; i++)
+                System.out.println((j+1) + " " + blocks.get(j).get(i).getSize());
     }
 
     public boolean touchUp(float x) {
@@ -188,7 +191,8 @@ public class Board implements  Iterable<Array<Block>>{
 
                 held.setLocation(2);
             }
-
+            if(blocks.get(1).size != 0)
+                System.out.println(held.getSize() + " " + held.getLocation() + " " + (held.getSize()));
             if(held.getLocation() == 1)
                 blocks.get(0).add(held);
             else if(held.getLocation() == 2)

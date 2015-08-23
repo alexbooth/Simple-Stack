@@ -9,28 +9,30 @@ import aurelienribon.tweenengine.equations.Back;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.foxo.buttons.Button;
 import com.foxo.simplestack.Assets;
 import com.foxo.tween.BaseImageAccessor;
 
 
-public class MenuScreen extends CustomScreen implements  InputProcessor {
+public class MenuScreen implements Screen,  InputProcessor {
 
     private Game game;
 
-    private SpriteBatch batcher;
-    private OrthographicCamera camera;
+    private static final String version = "v1.10";
+
+    private SpriteBatch batch = Assets.batch;
+    private OrthographicCamera camera = Assets.camera;
 
     private ArrayList<Button> buttons;
     private TweenManager manager;
+    private BitmapFont font;
     private float width, height;
 
     public MenuScreen (Game game) {
@@ -38,20 +40,16 @@ public class MenuScreen extends CustomScreen implements  InputProcessor {
         this.width = Assets.V_WIDTH;
         this.height = Assets.V_HEIGHT;
 
-        batcher = new SpriteBatch();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(true, width, height);
-
         manager = new TweenManager();
         buttons = new ArrayList<>();
+
+        font = new BitmapFont();
+        font.setColor(1, 1, 1, 1);
 
         buttons.add(new Button(0.25f, height, width / 2.5f, width / 6f, Assets.playUp,  Assets.playDown));
         buttons.add(new Button(0.35f + width / 2.5f, height, width / 2.5f, width / 6f, Assets.rulesUp,  Assets.rulesDown));
 
         createTweens();
-
-        Gdx.input.setCatchBackKey(true);
 
         if(Assets.debug)
             System.out.println("MenuScreen attached");
@@ -74,26 +72,37 @@ public class MenuScreen extends CustomScreen implements  InputProcessor {
 
     @Override
     public void render (float delta) {
+        batch.setShader(null);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batcher.setProjectionMatrix(camera.combined);
-        batcher.disableBlending();
+        camera.setToOrtho(true, width, height);
+        batch.setProjectionMatrix(camera.combined);
+        batch.disableBlending();
 
-        batcher.begin();
-        batcher.draw(Assets.menuBackground, 0, 0, width, height, 0, 0,  Assets.menuBackground.getWidth(), Assets.menuBackground.getHeight(), false, true);
-        batcher.end();
+        batch.begin();
+        batch.draw(Assets.menuBackground, 0, 0, width, height, 0, 0, Assets.menuBackground.getWidth(), Assets.menuBackground.getHeight(), false, true);
+        batch.end();
 
-        batcher.enableBlending();
+        batch.enableBlending();
 
-        batcher.begin();
-        batcher.draw(Assets.title, 0, 0, width, height, 0, 0, Assets.title.getWidth(), Assets.title.getHeight(), false, true);
+        batch.begin();
+        batch.draw(Assets.title, 0, 0, width, height, 0, 0, Assets.title.getWidth(), Assets.title.getHeight(), false, true);
 
         for(Button b : buttons)
-            b.draw(batcher);
+            b.draw(batch);
 
-        batcher.end();
+        batch.end();
 
+        batch.setProjectionMatrix(Assets.NORMAL_PROJECTION);
+        batch.begin();
+        font.draw(batch, version, Assets.WIDTH - font.getBounds(version).width - 5 , font.getBounds(version).height + 5);
+        batch.end();
+
+        tick(delta);
+    }
+
+    public void tick(float delta) {
         if(delta <= 0.022f)
             manager.update(delta);
     }
@@ -102,6 +111,7 @@ public class MenuScreen extends CustomScreen implements  InputProcessor {
     public boolean keyDown(int keycode) {
         if(keycode == Keys.BACK || keycode == Keys.B) {
             Assets.dispose();
+            dispose();
             Gdx.app.exit();
         }
 
@@ -134,7 +144,6 @@ public class MenuScreen extends CustomScreen implements  InputProcessor {
 
     @Override
     public void dispose () {
-        batcher.dispose();
         Gdx.input.setInputProcessor(null);
 
         if(Assets.debug)
@@ -144,6 +153,7 @@ public class MenuScreen extends CustomScreen implements  InputProcessor {
     @Override
     public void show () {
         Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override

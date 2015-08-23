@@ -28,7 +28,7 @@ import com.foxo.simplestack.FontSize;
 import com.foxo.background.ShaderBackground;
 
 
-public class GameScreen extends CustomScreen implements InputProcessor {
+public class GameScreen implements Screen, InputProcessor {
 
     private Game game;
 
@@ -36,8 +36,8 @@ public class GameScreen extends CustomScreen implements InputProcessor {
     private static final float V_HEIGHT = Assets.V_HEIGHT;
     private static final float V_WIDTH = Assets.V_WIDTH;
 
-    private SpriteBatch batcher;
-    private OrthographicCamera camera;
+    private SpriteBatch batcher = Assets.batch;
+    private OrthographicCamera camera = Assets.camera;
     private ShapeRenderer shapeRenderer;
     private ShaderBackground background;
 
@@ -56,6 +56,7 @@ public class GameScreen extends CustomScreen implements InputProcessor {
 
     private boolean popup = false;
     private String welcomeMsg, winMsg;
+    private boolean renderReady = false; // TODO find some way to not use this
 
     private GameState state = GameState.Ready;
     private enum GameState {
@@ -65,10 +66,23 @@ public class GameScreen extends CustomScreen implements InputProcessor {
     public GameScreen(Game game, int level, int type) {
         this.game = game;
         this.level = level;
+        init(type);
+        background = new ShaderBackground(shapeRenderer, camera);
 
-        batcher = new SpriteBatch();
+        if(Assets.debug)
+            System.out.println("Level: " + level + " GameScreen attached");
+    }
 
-        camera = new OrthographicCamera();
+    public GameScreen(Game game, int level, int type, ShaderBackground background) {
+        this.game = game;
+        this.level = level;
+        init(type);
+        this.background = background;
+        if(Assets.debug)
+            System.out.println("Level: " + level + " GameScreen attached");
+    }
+
+    public void init(int type) {
         camera.setToOrtho(true, V_WIDTH, V_HEIGHT);
 
         shapeRenderer = new ShapeRenderer();
@@ -95,12 +109,7 @@ public class GameScreen extends CustomScreen implements InputProcessor {
 
         font = Assets.AlegreyaSans;
         shader = new ShaderProgram(Gdx.files.internal("shaders/outline.vert"), Gdx.files.internal("shaders/outline.frag"));
-        background = new ShaderBackground(shapeRenderer, camera);
         createButtons();
-        Gdx.input.setInputProcessor(this);
-
-        if(Assets.debug)
-            System.out.println("Level: " + level + " GameScreen attached");
     }
 
     public void createButtons() {
@@ -120,8 +129,6 @@ public class GameScreen extends CustomScreen implements InputProcessor {
 
     @Override
     public void render(float delta) {
-        //System.out.println(batcher.maxSpritesInBatch);
-        long time = System.nanoTime();
         batcher.setProjectionMatrix(camera.combined);
 
         background.draw(batcher);
@@ -129,12 +136,14 @@ public class GameScreen extends CustomScreen implements InputProcessor {
         batcher.begin();
 
         for(Array<Block> stack: board)
-            for(Block b: stack)
+            for(Block b: stack) {
                 b.draw(batcher);
+                renderNumber(b);
+            }
 
         batcher.end();
 
-        renderNumbers();
+
 
         batcher.begin();
 
@@ -165,7 +174,6 @@ public class GameScreen extends CustomScreen implements InputProcessor {
             renderWon();
 
         tween.update(delta);
-       // System.out.println("delta is " + ((System.nanoTime() - time)) + " seconds");
     }
 
     public void renderReady() {
@@ -201,8 +209,10 @@ public class GameScreen extends CustomScreen implements InputProcessor {
         font.setScale(FontSize.SIZE_12);
         batcher.begin();
 
-        font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);
-        font.draw(batcher, "Moves: " + board.getMoves(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        if(font!= null && timer != null && batcher != null) {
+            font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);                              // TODO this line crashed with a null pointer exception, why???
+            font.draw(batcher, "Moves: " + board.getMoves(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        }
 
         batcher.end();
         batcher.setShader(null);
@@ -228,19 +238,13 @@ public class GameScreen extends CustomScreen implements InputProcessor {
         batcher.disableBlending();
     }
 
-    public void renderNumbers() {
+    public void renderNumber(Block b) { // TODO something could be optimized here...
         batcher.setShader(shader);
         batcher.setProjectionMatrix(NORMAL_PROJECTION);
 
         float scale = (Assets.WIDTH / V_WIDTH);
 
-        batcher.begin();
-
-        for(Array<Block> stack: board)
-            for(Block b: stack)
-                adjustFont(b, scale);
-
-        batcher.end();
+        adjustFont(b, scale);
 
         batcher.setShader(null);
         batcher.setProjectionMatrix(camera.combined);
@@ -275,7 +279,8 @@ public class GameScreen extends CustomScreen implements InputProcessor {
         batcher.begin();
 
         font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);
-        font.draw(batcher, "FPS: " + Gdx.graphics.getFramesPerSecond(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        //font.draw(batcher, "FPS: " + Gdx.graphics.getFramesPerSecond(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
+        font.draw(batcher, "Moves: " + board.getMoves(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
 
         batcher.end();
         batcher.setShader(null);
@@ -400,12 +405,12 @@ public class GameScreen extends CustomScreen implements InputProcessor {
                 state = GameState.Won;
             }
         }
-        else if(state == GameState.Paused && !popup) {
+        else if(state == GameState.Paused && !popup) {      // TODO
             if(pausedButtons.get(0).isTouchUp(touchPos.x, touchPos.y))
                 popup = true;
             else if(pausedButtons.get(1).isTouchUp(touchPos.x, touchPos.y))
                 state = GameState.Playing;
-            else if(pausedButtons.get(2).isTouchUp(touchPos.x, touchPos.y)) {
+            else if(pausedButtons.get(2).isTouchUp(touchPos.x, touchPos.y)) { // TODO is this dead code??? dispose??
                 Gdx.input.setInputProcessor(null);
                 game.setScreen(new TransitionScreen(this, new MenuScreen(game), game, TransitionScreen.FADE_OUT_IN));
             }
@@ -413,23 +418,21 @@ public class GameScreen extends CustomScreen implements InputProcessor {
         else if(popup) {
             if(popUpButtons.get(0).isTouchUp(touchPos.x, touchPos.y)) {
                 board.endGame();
-                dispose();
-                game.setScreen(new GameScreen(game, level, Board.REPLAY));
+                game.setScreen(new GameScreen(game, level, Board.REPLAY, background));
             }
             else if (popUpButtons.get(1).isTouchUp(touchPos.x, touchPos.y))
                 popup = false;
         }
-        else if(state == GameState.Won) {
+        else if(state == GameState.Won) {               // TODO
             if(wonButtons.get(0).isTouchUp(touchPos.x, touchPos.y)) {
-                dispose();
-                game.setScreen(new GameScreen(game, level, Board.REPLAY));
+                game.setScreen(new GameScreen(game, level, Board.REPLAY, background));
             }
             else if(wonButtons.get(1).isTouchUp(touchPos.x, touchPos.y) && level != Assets.MAX_LEVEL) {
-                dispose();
-                game.setScreen(new GameScreen(game, level + 1, Board.NEXT_LEVEL));
+                game.setScreen(new GameScreen(game, level + 1, Board.NEXT_LEVEL, background));
             }
             else if(wonButtons.get(2).isTouchUp(touchPos.x, touchPos.y)) {
                 Gdx.input.setInputProcessor(null);
+                //dispose(); // TODO dispose???
                 game.setScreen(new TransitionScreen(this, new MenuScreen(game), game, TransitionScreen.FADE_OUT_IN));
             }
         }
@@ -451,7 +454,6 @@ public class GameScreen extends CustomScreen implements InputProcessor {
     public void dispose () {
         shapeRenderer.dispose();
         background.dispose();
-        batcher.dispose();
         shader.dispose();
         font.dispose();
 

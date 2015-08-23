@@ -1,11 +1,14 @@
 package com.foxo.simplestack;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.foxo.objects.Block;
 import com.foxo.saving.SaveManager;
@@ -13,6 +16,7 @@ import com.foxo.saving.SaveManager;
 
 public class Assets {
 
+    // Some constants
     public static final Matrix4 NORMAL_PROJECTION = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     public static final int HEIGHT = Gdx.graphics.getHeight();
     public static final int WIDTH = Gdx.graphics.getWidth();
@@ -20,16 +24,26 @@ public class Assets {
     public static final float V_WIDTH = 3;
     public static final int MAX_LEVEL = 12;
 
+    // Textures
     public static TextureRegion pause, resumeUp, resumeDown, mainMenuUp, mainMenuDown, nextLevelUp, nextLevelDown, restartUp, restartDown, replayUp;
     public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown;
     public static TextureRegion blockTexture[], levelDown[], levelUp[], levelLock[];
     public static Texture splash, menuBackground, board, htpBackground, title;
 
-    public static BitmapFont AlegreyaSans;
-    public static Block blocks[];
+    // Renderers and cameras
+    public static SpriteBatch batch;
+    public static ShapeRenderer sr;
+    public static OrthographicCamera camera;
 
-    public static boolean sixteenByNine, loadComplete = false;
+    // Fonts
+    public static BitmapFont AlegreyaSans;
+
+    // Game Objects
+    public static Block blocks[];
     public static SaveManager save;
+
+    // Meta info
+    public static boolean sixteenByNine, loadComplete = false;
     public static final boolean debug = true;
 
     public static boolean load() {
@@ -50,6 +64,12 @@ public class Assets {
             System.out.println("Assets loaded after " + (System.currentTimeMillis() - time) / 1000 + " seconds");
 
         return true;
+    }
+
+    private static void loadRenderers() {
+        batch = new SpriteBatch();
+        sr = new ShapeRenderer();
+        camera = new OrthographicCamera();
     }
 
     private static void loadBackgrounds() {
@@ -142,10 +162,9 @@ public class Assets {
 
         sixteenByNine = (float) WIDTH / HEIGHT > 1.555555f;
 
-        System.out.println(sixteenByNine);
-
         splash = new Texture(Gdx.files.internal("images/splash/splash.png"));
         splash.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        loadRenderers();
     }
 
     public static void dispose() {

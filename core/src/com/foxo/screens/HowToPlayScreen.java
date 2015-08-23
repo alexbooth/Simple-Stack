@@ -3,8 +3,8 @@ package com.foxo.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,15 +15,15 @@ import com.foxo.simplestack.Assets;
 import com.foxo.simplestack.FontSize;
 
 
-public class HowToPlayScreen extends CustomScreen implements InputProcessor {
+public class HowToPlayScreen implements Screen, InputProcessor {
 
     private Game game;
 
-    private static final Matrix4 normalProjection  = Assets.NORMAL_PROJECTION;
+    private static final Matrix4 normalProjection = Assets.NORMAL_PROJECTION;
     private static final String line1 = "1. Move the stack to the rightmost base";
     private static final String line2 = "2. Rocks can only be put on larger rocks";
 
-    private SpriteBatch batcher;
+    private SpriteBatch batch;
     private OrthographicCamera camera;
 
     private BitmapFont font;
@@ -34,10 +34,8 @@ public class HowToPlayScreen extends CustomScreen implements InputProcessor {
     public HowToPlayScreen(Game game) {
         this.game = game;
 
-        batcher = new SpriteBatch();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(true, Assets.WIDTH, Assets.HEIGHT);
+        batch = Assets.batch;
+        camera = Assets.camera;
 
         font = Assets.AlegreyaSans;
         font.setScale(FontSize.SIZE_12);
@@ -51,26 +49,27 @@ public class HowToPlayScreen extends CustomScreen implements InputProcessor {
 
     @Override
     public void render(float delta) {
-        batcher.setProjectionMatrix(camera.combined);
-        batcher.disableBlending();
-        batcher.setShader(null);
+        camera.setToOrtho(true, Assets.WIDTH, Assets.HEIGHT);
+        batch.setProjectionMatrix(camera.combined);
+        batch.disableBlending();
+        batch.setShader(null);
 
-        batcher.begin();
-        batcher.draw(Assets.htpBackground, 0, 0, Assets.WIDTH, Assets.HEIGHT, 0, 0,  Assets.htpBackground.getWidth(), Assets.htpBackground.getHeight(), false, true);
-        batcher.end();
+        batch.begin();
+        batch.draw(Assets.htpBackground, 0, 0, Assets.WIDTH, Assets.HEIGHT, 0, 0, Assets.htpBackground.getWidth(), Assets.htpBackground.getHeight(), false, true);
+        batch.end();
 
-        batcher.enableBlending();
-        batcher.begin();
-        backButton.draw(batcher);
-        batcher.end();
+        batch.enableBlending();
+        batch.begin();
+        backButton.draw(batch);
+        batch.end();
 
-        batcher.setShader(shader);
-        batcher.setProjectionMatrix(normalProjection);
+        batch.setShader(shader);
+        batch.setProjectionMatrix(normalProjection);
 
-        batcher.begin();
-        font.draw(batcher, line2, Assets.WIDTH / 2 - font.getBounds(line2).width / 2, Assets.HEIGHT / 3 + font.getBounds(line2).height * 2);
-        font.draw(batcher, line1, Assets.WIDTH / 2 - font.getBounds(line1).width / 2, Assets.HEIGHT / 1.5f + font.getBounds(line1).height * 2);
-        batcher.end();
+        batch.begin();
+        font.draw(batch, line2, Assets.WIDTH / 2 - font.getBounds(line2).width / 2, Assets.HEIGHT / 3 + font.getBounds(line2).height * 2);
+        font.draw(batch, line1, Assets.WIDTH / 2 - font.getBounds(line1).width / 2, Assets.HEIGHT / 1.5f + font.getBounds(line1).height * 2);
+        batch.end();
     }
 
     @Override
@@ -100,7 +99,6 @@ public class HowToPlayScreen extends CustomScreen implements InputProcessor {
 
     @Override
     public void dispose () {
-        batcher.dispose();
         shader.dispose();
         font.dispose();
         Gdx.input.setInputProcessor(null);

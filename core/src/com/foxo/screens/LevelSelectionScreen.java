@@ -150,8 +150,17 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
 
         batch.setShader(null);
         batch.end();
-
+        renderCorners();
         tween.update(delta);
+    }
+
+    public void renderCorners() {
+        batch.begin();
+        batch.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batch.end();
     }
 
     @Override

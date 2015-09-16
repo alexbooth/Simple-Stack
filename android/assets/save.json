@@ -2,9 +2,9 @@
 "data": {
 	"level:1": {
 		"class": "com.foxo.saving.SaveObject",
-		"moves": 1,
+		"moves": 3,
 		"level": 1,
-		"time": 0.9330752,
+		"time": 7.839381,
 		"bestTime": 0.3160049,
 		"bestMoves": 1,
 		"array": [
@@ -20,7 +20,7 @@
 		"class": "com.foxo.saving.SaveObject",
 		"moves": 3,
 		"level": 2,
-		"time": 1.217071,
+		"time": 4.0731583,
 		"bestTime": 1.0170618,
 		"bestMoves": 3,
 		"array": [
@@ -34,25 +34,18 @@
 	},
 	"level:3": {
 		"class": "com.foxo.saving.SaveObject",
-		"moves": 5,
 		"level": 3,
-		"time": 9.03427,
+		"time": 3.5915544,
 		"inProgress": true,
 		"bestTime": 2.216121,
 		"bestMoves": 7,
 		"array": [
 			{
-				"items": [ 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 1
+				"items": [ 12, 11, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+				"size": 3
 			},
-			{
-				"items": [ 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 1
-			},
-			{
-				"items": [ 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-				"size": 1
-			}
+			{},
+			{}
 		]
 	},
 	"level:4": {

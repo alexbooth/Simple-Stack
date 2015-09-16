@@ -46,7 +46,7 @@ public class ShaderBackground {
 
 
     public void draw(SpriteBatch batch) {
-        time = (float) ((System.currentTimeMillis() - timeOrigin) / 1000.0d + timeOffset);
+        time = (float) ((System.currentTimeMillis() - timeOrigin) / 200.0d + timeOffset);
 
         float hill_3_amplitude = (float) (Math.sin(time * 0.0045f) * 0.025f);
         float hill_3_phase = time * 0.0375f;

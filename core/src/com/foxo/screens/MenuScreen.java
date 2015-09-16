@@ -93,13 +93,19 @@ public class MenuScreen implements Screen,  InputProcessor {
             b.draw(batch);
 
         batch.end();
-
         batch.setProjectionMatrix(Assets.NORMAL_PROJECTION);
-        batch.begin();
-        font.draw(batch, version, Assets.WIDTH - font.getBounds(version).width - 5 , font.getBounds(version).height + 5);
-        batch.end();
-
+        renderCorners();
         tick(delta);
+    }
+
+    public void renderCorners() {
+        batch.begin();
+        font.draw(batch, version, Assets.WIDTH - font.getBounds(version).width - 5, font.getBounds(version).height + 5);
+        batch.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batch.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batch.end();
     }
 
     public void tick(float delta) {

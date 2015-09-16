@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.foxo.objects.Board;
 import com.foxo.simplestack.Assets;
 
 
@@ -56,6 +57,8 @@ public class SplashScreen implements Screen {
         } else if (!transition && TimeUtils.nanoTime() - startTime >= 1250000000L) {
             if(Assets.debug) System.out.println("Starting after " + (float) (TimeUtils.nanoTime() - startTime)/1000000000L);
             transition = true;
+
+            //game.setScreen(new TransitionScreen(this, new GameScreen(game, 3, Board.NEW_GAME), game, TransitionScreen.FADE_OUT_IN));
             game.setScreen(new TransitionScreen(this, new MenuScreen(game), game, TransitionScreen.FADE_OUT_IN));
         }
     }

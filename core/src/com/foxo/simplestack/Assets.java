@@ -26,7 +26,7 @@ public class Assets {
 
     // Textures
     public static TextureRegion pause, resumeUp, resumeDown, mainMenuUp, mainMenuDown, nextLevelUp, nextLevelDown, restartUp, restartDown, replayUp;
-    public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown;
+    public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown, corner;
     public static TextureRegion blockTexture[], levelDown[], levelUp[], levelLock[];
     public static Texture splash, menuBackground, board, htpBackground, title;
 
@@ -116,6 +116,7 @@ public class Assets {
         rulesDown = theAtlas.findRegion("rulesDown");
         playUp = theAtlas.findRegion("playUp");
         playDown = theAtlas.findRegion("playDown");
+        corner = new TextureRegion(new Texture (Gdx.files.internal("images/misc/corner.png")));
     }
 
     private static void loadBlocks() {

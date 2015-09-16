@@ -124,7 +124,7 @@ public class GameScreen implements Screen, InputProcessor {
         pause = new Button(V_WIDTH - V_HEIGHT / 8f - 0.05f, 0.05f, V_HEIGHT / 8f, V_HEIGHT / 8f, Assets.pause, Assets.pause);
 
         popUpButtons.add(new Button(V_WIDTH / 2 - V_WIDTH / 4f, V_HEIGHT / 2f - V_WIDTH / 8f, V_WIDTH / 4f, V_WIDTH / 4f, Assets.okUp, Assets.okDown));
-        popUpButtons.add(new Button(V_WIDTH/ 2, V_HEIGHT / 2f - V_WIDTH / 8f, V_WIDTH / 4f, V_WIDTH / 4f, Assets.cancelUp, Assets.cancelDown));
+        popUpButtons.add(new Button(V_WIDTH / 2, V_HEIGHT / 2f - V_WIDTH / 8f, V_WIDTH / 4f, V_WIDTH / 4f, Assets.cancelUp, Assets.cancelDown));
     }
 
     @Override
@@ -173,7 +173,20 @@ public class GameScreen implements Screen, InputProcessor {
         else if (state == GameState.Won)
             renderWon();
 
+        renderCorners();
+
         tween.update(delta);
+    }
+
+    public void renderCorners() {
+        batcher.begin();
+        batcher.enableBlending();
+        batcher.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight());
+        batcher.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight());
+        batcher.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batcher.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
+        batcher.disableBlending();
+        batcher.end();
     }
 
     public void renderReady() {

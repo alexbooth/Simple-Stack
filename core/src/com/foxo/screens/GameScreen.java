@@ -118,7 +118,7 @@ public class GameScreen implements Screen, InputProcessor {
         wonButtons.add(new Button(V_WIDTH - V_WIDTH / 3.2f, V_HEIGHT / 2f - V_WIDTH / 16f, V_WIDTH / 4f, V_WIDTH / 8f, Assets.mainMenuUp, Assets.mainMenuDown));
 
         pausedButtons.add(new Button(V_WIDTH / 16f, V_HEIGHT / 2f - V_WIDTH / 16f, V_WIDTH / 4f, V_WIDTH / 8f, Assets.restartUp, Assets.restartDown));
-        pausedButtons.add(new Button(V_WIDTH / 2 - V_WIDTH / 8f, V_HEIGHT / 2f - V_WIDTH / 16f, V_WIDTH / 4f, V_WIDTH / 8f,Assets.resumeUp, Assets.resumeDown));
+        pausedButtons.add(new Button(V_WIDTH / 2 - V_WIDTH / 8f, V_HEIGHT / 2f - V_WIDTH / 16f, V_WIDTH / 4f, V_WIDTH / 8f, Assets.resumeUp, Assets.resumeDown));
         pausedButtons.add(new Button(V_WIDTH - V_WIDTH / 3.2f, V_HEIGHT / 2f - V_WIDTH / 16f, V_WIDTH / 4f, V_WIDTH / 8f, Assets.mainMenuUp, Assets.mainMenuDown));
 
         pause = new Button(V_WIDTH - V_HEIGHT / 8f - 0.05f, 0.05f, V_HEIGHT / 8f, V_HEIGHT / 8f, Assets.pause, Assets.pause);
@@ -142,8 +142,6 @@ public class GameScreen implements Screen, InputProcessor {
             }
 
         batcher.end();
-
-
 
         batcher.begin();
 
@@ -179,14 +177,15 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     public void renderCorners() {
-        batcher.begin();
+        batcher.setProjectionMatrix(NORMAL_PROJECTION);
         batcher.enableBlending();
+        batcher.begin();
         batcher.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight());
         batcher.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.HEIGHT - Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight());
         batcher.draw(Assets.corner, Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), -Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
         batcher.draw(Assets.corner, Assets.WIDTH - Assets.corner.getRegionWidth(), Assets.corner.getRegionHeight(), Assets.corner.getRegionWidth(), -Assets.corner.getRegionHeight());
-        batcher.disableBlending();
         batcher.end();
+        batcher.disableBlending();
     }
 
     public void renderReady() {
@@ -213,7 +212,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void renderPaused() {
         batcher.enableBlending();
         batcher.begin();
-
+        System.out.println("drawing paused");
         pause.draw(batcher);
 
         batcher.end();
@@ -222,8 +221,8 @@ public class GameScreen implements Screen, InputProcessor {
         font.setScale(FontSize.SIZE_12);
         batcher.begin();
 
-        if(font!= null && timer != null && batcher != null) {
-            font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);                              // TODO this line crashed with a null pointer exception, why???
+        if(font != null && timer != null && batcher != null) {
+            font.draw(batcher, timer.getTime(), 5, Assets.HEIGHT - 5);                              // TODO: this line crashed with a null pointer exception, why???
             font.draw(batcher, "Moves: " + board.getMoves(), Assets.WIDTH / 2, Assets.HEIGHT - 5);
         }
 
@@ -251,7 +250,7 @@ public class GameScreen implements Screen, InputProcessor {
         batcher.disableBlending();
     }
 
-    public void renderNumber(Block b) { // TODO something could be optimized here...
+    public void renderNumber(Block b) { // TODO: something could be optimized here...
         batcher.setShader(shader);
         batcher.setProjectionMatrix(NORMAL_PROJECTION);
 

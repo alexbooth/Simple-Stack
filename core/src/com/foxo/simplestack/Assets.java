@@ -25,8 +25,8 @@ public class Assets {
     public static final int MAX_LEVEL = 12;
 
     // Textures
-    public static TextureRegion pause, resumeUp, resumeDown, mainMenuUp, mainMenuDown, nextLevelUp, nextLevelDown, restartUp, restartDown, replayUp;
-    public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown, corner;
+    public static TextureRegion pause, resumeUp, resumeDown, mainMenuUp, mainMenuDown, nextLevelUp, nextLevelDown, restartUp, restartDown, replayUp, minusUp, minusDown;
+    public static TextureRegion replayDown, cancelUp, cancelDown, okUp, okDown, backUp, backDown, playUp, playDown, rulesUp, rulesDown, corner, plusUp, plusDown;
     public static TextureRegion blockTexture[], levelDown[], levelUp[], levelLock[];
     public static Texture splash, menuBackground, board, htpBackground, title;
 
@@ -116,6 +116,13 @@ public class Assets {
         rulesDown = theAtlas.findRegion("rulesDown");
         playUp = theAtlas.findRegion("playUp");
         playDown = theAtlas.findRegion("playDown");
+
+        TextureAtlas otherAtlas = new TextureAtlas(Gdx.files.internal("images/gamebuttons/plusminus.atlas"), true);
+        plusUp = otherAtlas.findRegion("plusup");
+        plusDown = otherAtlas.findRegion("plusdown");
+        minusUp = otherAtlas.findRegion("minusup");
+        minusDown = otherAtlas.findRegion("minusdown");
+
         corner = new TextureRegion(new Texture (Gdx.files.internal("images/misc/corner.png")));
     }
 

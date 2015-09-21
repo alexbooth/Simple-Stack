@@ -1,0 +1,33 @@
+
+plusminus.png
+format: RGBA8888
+filter: MipMapLinearLinear,MipMapLinearLinear
+repeat: none
+minusdown
+  rotate: false
+  xy: 2, 522
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minusup
+  rotate: false
+  xy: 2, 262
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+plusdown
+  rotate: false
+  xy: 262, 522
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+plusup
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1

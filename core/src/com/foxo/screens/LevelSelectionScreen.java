@@ -45,7 +45,7 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
     private BitmapFont font;
     private ShaderProgram shader;
 
-    private Button beginButton;
+    private Button beginButton, minusButton, plusButton;
     private boolean inProg[];
     private String bestTimes[], bestMoves[];
     private float blockTo[][], blockFrom[][];
@@ -61,7 +61,9 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
         font.setScale(FontSize.SIZE_12);
         shader = new ShaderProgram(Gdx.files.internal("shaders/outline.vert"), Gdx.files.internal("shaders/outline.frag"));
 
-        beginButton = new Button(0.25f,  V_HEIGHT - 0.5f - 0.15f, 1.2f, 0.5f, Assets.playUp,  Assets.playDown);
+        beginButton = new Button(0.1f,  V_HEIGHT - 0.6f, 1.2f, 0.5f, Assets.playUp,  Assets.playDown);
+        plusButton  = new Button(V_WIDTH - 0.36f, 1.27f, 0.3f, 0.3f, Assets.plusUp, Assets.plusDown);
+        minusButton = new Button(1.4f, 1.27f, 0.3f, 0.3f, Assets.minusUp, Assets.minusDown);
 
         tween = new TweenManager();
         gipy = new TweenableFloat(-font.getBounds("Game in progress!").height - 50);
@@ -70,10 +72,15 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
         blockFrom = new float[Assets.MAX_LEVEL][2];
 
         for(int i = 0; i < Assets.MAX_LEVEL; i++) {
-            blockTo[i][0] = V_WIDTH * 0.7f - Assets.blocks[i].getWidth() / 2f;
-            blockTo[i][1] = V_HEIGHT - (V_HEIGHT / 3.4f) - i * (V_WIDTH / 26.67f);
+            Assets.blocks[i].setWidth(0.9f);
+            Assets.blocks[i].setHeight(0.2f);
+            System.out.println("Current width" + Assets.blocks[i].getHeight());
+            blockTo[i][0] = V_WIDTH * 0.72f - Assets.blocks[i].getWidth() / 2f;
+            blockTo[i][1] = V_HEIGHT - (V_HEIGHT / 3f) - i * (V_WIDTH / 30f);
+            //blockTo[i][1] = V_HEIGHT - (V_HEIGHT / 3.4f) - i * (V_WIDTH / 26.67f);
             blockFrom[i][0] = V_WIDTH;
             blockFrom[i][1] = V_HEIGHT;
+
 
             if(i < 3)
                 Assets.blocks[i].setPos(blockTo[i][0], blockTo[i][1]);
@@ -131,22 +138,24 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
            Assets.blocks[i].draw(batch);
 
         beginButton.draw(batch);
-
         batch.setColor(1, 1, 1, 1);
+
+        minusButton.draw(batch);
+        plusButton.draw(batch);
 
         batch.setProjectionMatrix(NORMAL_PROJECTION);
         batch.setShader(shader);
 
-        font.setScale(FontSize.SIZE_12);
-        font.draw(batch, "Best time: " + bestTimes[page - 1], Assets.WIDTH / 2f - Assets.WIDTH / 2.5f,
-                Gdx.graphics.getHeight() + font.getBounds("Best time: " + bestTimes[page - 1]).height / 2f - Assets.WIDTH / 5f);
-        font.draw(batch, "Best moves: " + bestMoves[page - 1], Assets.WIDTH / 2f - Assets.WIDTH / 2.5f,
-                Gdx.graphics.getHeight() + font.getBounds("Best time: " + bestMoves[page - 1]).height / 2f - Assets.WIDTH / 3.5f);
+        font.setScale(FontSize.SIZE_13);
+        font.draw(batch, "Best time: " + bestTimes[page - 1], Assets.WIDTH / 30f,
+                Gdx.graphics.getHeight() + font.getBounds("Best time: " + bestTimes[page - 1]).height  - Assets.WIDTH / 5f);
+        font.draw(batch, "Best moves: " + bestMoves[page - 1],  Assets.WIDTH / 30f,
+                Gdx.graphics.getHeight() + font.getBounds("Best time: " + bestMoves[page - 1]).height  - Assets.WIDTH / 3.5f);
 
-        font.draw(batch, "Game in progress!", Assets.WIDTH / 2f - Assets.WIDTH / 2.5f,  Assets.HEIGHT - gipy.getFloat());
+        font.draw(batch, "Game in progress!", Assets.WIDTH / 14f,  Assets.HEIGHT - gipy.getFloat());
 
         font.setScale(FontSize.SIZE_14);
-        font.draw(batch, "Level: " + page, Assets.WIDTH * 0.7f - font.getBounds("Level: " + page).width / 2f, Assets.HEIGHT / 10f + font.getBounds("Level: " + page).height / 2f);
+        font.draw(batch, "Level: " + page, Assets.WIDTH * 0.72f - font.getBounds("Level: " + page).width / 2f, Assets.HEIGHT / 6f + font.getBounds("Level: " + page).height / 2f - 5);
 
         batch.setShader(null);
         batch.end();
@@ -167,27 +176,10 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
     public boolean keyDown(int keycode) {
         if(keycode == Keys.BACK || keycode == Keys.B)
             game.setScreen(new TransitionScreen(this, new MenuScreen(game), game, TransitionScreen.FADE_OUT_IN));
-        else if(keycode == Keys.LEFT && page > 1) {
-            page--;
-            Tween.to(Assets.blocks[page], BaseImageAccessor.POSITION_XY, 0.3f)
-                    .target(blockFrom[page][0], blockFrom[page][1])
-                    .ease(Quad.INOUT)
-                    .start(tween);
-            tweenGIP();
-        }
-        else if(keycode == Keys.RIGHT && page < 12) {
-            page++;
-            Tween.to(Assets.blocks[page - 1], BaseImageAccessor.POSITION_XY, 0.3f)
-                    .target(blockTo[page - 1][0], blockTo[page - 1][1])
-                    .ease(Quad.INOUT)
-                    .start(tween);
-            tweenGIP();
-        }
-
         return false;
     }
 
-    public void tweenGIP(){
+    public void tweenGIP() {
         font.setScale(FontSize.SIZE_12);
 
         if(inProg[page - 1]) {
@@ -225,6 +217,23 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
         if(page <= lockAboveIndex + 1)
             beginButton.isTouchDown(touchPos.x, touchPos.y);
 
+        if(minusButton.isTouchDown(touchPos.x, touchPos.y) && page > 1) {
+            page--;
+            Tween.to(Assets.blocks[page], BaseImageAccessor.POSITION_XY, 0.3f)
+                    .target(blockFrom[page][0], blockFrom[page][1])
+                    .ease(Quad.INOUT)
+                    .start(tween);
+            tweenGIP();
+        }
+        else if(plusButton.isTouchDown(touchPos.x, touchPos.y) && page < 12) {
+            page++;
+            Tween.to(Assets.blocks[page - 1], BaseImageAccessor.POSITION_XY, 0.3f)
+                    .target(blockTo[page - 1][0], blockTo[page - 1][1])
+                    .ease(Quad.INOUT)
+                    .start(tween);
+            tweenGIP();
+        }
+
         return true;
     }
 
@@ -235,6 +244,8 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
             Gdx.input.setInputProcessor(null);
             game.setScreen(new TransitionScreen(screenShotandDispose(), new GameScreen(game, page, Board.NEW_GAME), game, TransitionScreen.FADE_OUT_IN));
         }
+        minusButton.isTouchUp(touchPos.x, touchPos.y);
+        plusButton.isTouchUp(touchPos.x, touchPos.y);
 
         return true;
     }
@@ -276,7 +287,7 @@ public class LevelSelectionScreen implements Screen, InputProcessor {
     @Override
     public void resume () {}
 
-    public FrameBuffer screenShotandDispose() {      // TODO keep an eye on this, may start memory leak
+    public FrameBuffer screenShotandDispose() {      // TODO: keep an eye on this, may start memory leak
             FrameBuffer currentBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Assets.WIDTH, Assets.HEIGHT, false);
             currentBuffer.begin();
             render(0);

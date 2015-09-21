@@ -119,7 +119,7 @@ public class Board implements  Iterable<Array<Block>>{
                     blocks.get(0).add(Assets.blocks[level - 1]);
                     Assets.blocks[level - 1].setPos(-1.5f, vHeight - base - (level - 1) * (vWidth / 26.67f));
 
-                    Tween.to(blocks.get(0).get(level - 1), BaseImageAccessor.POSITION_XY, 1.25f) // TODO: crashed here a few times randomly w/ java.lang.ArrayIndexOutOfBoundsException: 0
+                    Tween.to(blocks.get(0).get(level - 1), BaseImageAccessor.POSITION_XY, 1.25f) // TODO: crashed here a few times randomly w/ java.lang.ArrayIndexOutOfBoundsException: 0 // length=0 index=0
                             .waypoint(-0.5f, vHeight - base - (level+2) * (vWidth / 26.67f))
                             .target(0, vHeight - base - (level - 1) * (vWidth / 26.67f))
                             .ease(Back.INOUT)
